@@ -1,11 +1,20 @@
+import 'package:atomic_widgets/LocalConstants/SharedPreferences/constants/shared_constants.dart';
+import 'package:atomic_widgets/LocalConstants/SharedPreferences/view/shared_view.dart';
 import 'package:atomic_widgets/ServiceConstants/Dio/core/service/dio_service_constant.dart';
 import 'package:atomic_widgets/ServiceConstants/Dio/service_dio.dart';
 import 'package:atomic_widgets/ServiceConstants/http/core/service/http_service_class.dart';
 import 'package:atomic_widgets/ServiceConstants/http/service_http.dart';
+import 'package:atomic_widgets/ServiceConstants/vexana/core/service/vexana_service_constants.dart';
+import 'package:atomic_widgets/ServiceConstants/vexana/service_vexana.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:vexana/vexana.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesConstant.prefrencesInit();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,7 +23,19 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       home: Scaffold(
         appBar: buildAppBar,
-        body: buildHttpServiceWidget,
+        body: SharedPreferencesCounterWidget(),
+      ),
+    );
+  }
+
+  VexanaServiceWidget get buildVexanaServiceWidget {
+    return VexanaServiceWidget(
+      vexanaServiceConstants: VexanaServiceConstants(
+        service: NetworkManager(
+            options:
+                BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com'),
+            isEnableLogger: true,
+            fileManager: LocalPreferences()),
       ),
     );
   }
